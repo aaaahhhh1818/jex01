@@ -35,6 +35,6 @@ public class BoardController {
         Long bno = boardService.register(boardDTO);
 
         return "redirect:/board/list";
-    }
+    } 
 
 }
