@@ -8,12 +8,15 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.zerock.jex01.board.config.BoardRootConfig;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
 
 //내부적인 부분 : Component / 외부적인 부분 : Configuration
 @Configuration //걸자마자 옆에 bean표시가 생김, 자바소스를 빈으로 만들어주는 태그
+@Import(BoardRootConfig.class)
 public class RootConfig {
 
     @Bean //mybatis 연결

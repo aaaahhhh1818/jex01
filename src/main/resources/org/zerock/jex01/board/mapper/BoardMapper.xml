@@ -8,6 +8,26 @@
     <insert id="insert">
         insert tbl_board (title,content,writer)
         values (#{title},#{content},#{writer})
+        <selectKey order="AFTER" resultType="long" keyProperty="bno">
+            select last_insert_id() <!--마지막에 insert된 값 가져오기-->
+        </selectKey>
     </insert>
+
+    <select id="getList" resultType="org.zerock.jex01.board.domain.Board">
+        select * from tbl_board order by bno desc limit 0, 100
+    </select>
+
+    <select id="select" resultType="org.zerock.jex01.board.domain.Board">
+        select * from tbl_board where bno = #{bno}
+    </select>
+
+    <delete id="delete">
+        delete from tbl_board where bno = #{bno}
+    </delete>
+
+    <update id="update">
+        update tbl_board set title = #{title}, content = #{content}, modDate = now()
+        where bno = #{bno}
+    </update>
 
 </mapper>

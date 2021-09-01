@@ -33,4 +33,43 @@ public class BoardMapperTests {
             boardMapper.insert(board);
         });
     }
+
+    @Test
+    public void testList() {
+
+        boardMapper.getList().forEach(board -> log.info(board));
+
+    }
+
+    @Test
+    public void testSelect() {
+
+        log.info(boardMapper.select(229L));
+
+    }
+
+    @Test
+    public void testDelete() {
+
+        long bno = 213L;
+
+        log.info("delete..........");
+        log.info(boardMapper.delete(bno));
+
+    }
+
+    @Test
+    public void testUpdate() {
+
+        //가짜 값을 넣은 Board
+        Board board = Board.builder()
+                .bno(228L)
+                .title("수정된 제목")
+                .content("수정된 내용..228")
+                .build();
+
+        log.info(boardMapper.update(board));
+
+    }
+
 }

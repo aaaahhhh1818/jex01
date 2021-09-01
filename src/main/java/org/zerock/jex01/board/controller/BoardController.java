@@ -1,5 +1,6 @@
 package org.zerock.jex01.board.controller;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
@@ -7,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.jex01.board.dto.BoardDTO;
 import org.zerock.jex01.board.service.BoardService;
 import org.zerock.jex01.board.service.TimeService;
@@ -22,19 +24,70 @@ public class BoardController {
     private final BoardService boardService; //postMapping에서 사용
 
     @GetMapping("/time")
-    public void getTime(Model model){
+    public void getTime(int num, Model model){
         log.info("==================controller getTime===================");
         model.addAttribute("time", timeService.getNow());
+
+        log.info(num % 0);
+    }
+
+    @GetMapping("/register")
+    public void registerGet() {
+
     }
 
     @PostMapping("/register")
-    public String registerPost(BoardDTO boardDTO){ // 리다이렉트 하려고 String사용
+    public String registerPost(BoardDTO boardDTO, RedirectAttributes redirectAttributes){ // 리다이렉트 하려고 String사용
 
         log.info("boardDTOM           " + boardDTO);
 
         Long bno = boardService.register(boardDTO);
 
+        log.info("==================c     registerPost===================");
+        log.info(bno);
+        redirectAttributes.addFlashAttribute("result", bno);
+
         return "redirect:/board/list";
-    } 
+    }
+
+    @GetMapping("/list")
+    public void getList(Model model) { //그냥 리스트 뽑아주는거라서 void //Model 사용해서 JSP에 담아서 보냄
+
+        log.info("c    getList................."); //controller로그 c, service로그 s
+        model.addAttribute("dtoList", boardService.getDTOList());
+
+    }
+
+    @GetMapping(value = {"/read", "/modify"})
+    public void read(Long bno, Model model) {
+
+        log.info("c     read " + bno);
+        model.addAttribute("boardDTO", boardService.read(bno));
+
+    }
+
+    @PostMapping("/remove")
+    public String remove(Long bno, RedirectAttributes redirectAttributes) {
+
+        log.info("c     remove: " + bno);
+
+        if(boardService.remove(bno)) {
+            log.info(bno);
+            redirectAttributes.addFlashAttribute("result", "success");
+        }
+        return "redirect:/board/list";
+    }
+
+    @PostMapping("/modify")
+    public String modify(BoardDTO boardDTO, RedirectAttributes redirectAttributes) {
+
+        log.info("c        modify: " + boardDTO);
+
+        if(boardService.modify(boardDTO)) {
+            redirectAttributes.addFlashAttribute("result", "modified"); //flash 하면 눈에 안보임
+        }
+        redirectAttributes.addAttribute("bno", boardDTO.getBno()); //bno 값을 가져와줌
+        return "redirect:/board/read";
+    }
 
 }
