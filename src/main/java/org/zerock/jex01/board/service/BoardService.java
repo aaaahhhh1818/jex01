@@ -1,6 +1,8 @@
 package org.zerock.jex01.board.service;
 
 import org.zerock.jex01.board.dto.BoardDTO;
+import org.zerock.jex01.common.dto.PageRequestDTO;
+import org.zerock.jex01.common.dto.PageResponseDTO;
 
 import java.util.List;
 
@@ -9,7 +11,7 @@ public interface BoardService {
 
     Long register(BoardDTO boardDTO);
 
-    List<BoardDTO> getDTOList();
+    PageResponseDTO<BoardDTO> getDTOList(PageRequestDTO pageRequestDTO);
 
     BoardDTO read(Long bno);
 

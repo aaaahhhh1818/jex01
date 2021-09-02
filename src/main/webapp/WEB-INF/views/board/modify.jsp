@@ -32,7 +32,9 @@
                             <h3 class="card-title">Board Modify</h3>
                         </div>
                         <!-- /.card-header -->
-                    <form id="form1">
+                    <form id="form1"> <%--실제로 날라가는애--%>
+                        <input type="hidden" name="page" value="${pageRequestDTO.page}">
+                        <input type="hidden" name="size" value="${pageRequestDTO.size}">
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="exampleInputEmail1">BNO</label>
@@ -72,50 +74,50 @@
     </section>
 </div>
 
+<form id="actionForm" action="/board/list" method="get">
+    <input type="hidden" name="page" value="${pageRequestDTO.page}">
+    <input type="hidden" name="size" value="${pageRequestDTO.size}">
+</form>
+
 <%@ include file="../includes/footer.jsp" %>
 
 <script>
 
     const form = document.querySelector("#form1")
+    const actionForm = document.querySelector("#actionForm")
 
     document.querySelector(".btnList").addEventListener("click", (e) => {
-        //기본적으로 form 태그 안에있는 버튼은 submmit
         e.preventDefault()
         e.stopPropagation()
 
-        // form.setAttribute("action", "/board/list")
-        // form.setAttribute("method", "get")
+        // form.setAttribute("action","/board/list")
+        // form.setAttribute("method","get")
 
-        // const arr = form.querySelectorAll(".form-group")
-        //
-        // for(let i = 0; i < arr.length; i++) {
-        //     arr[i].remove()
-        // }
-        // form.submit()
+        // window.location = "/board/list"
 
-        window.location = "/board/list"
-
-    }, false)
+        actionForm.submit();
+    },false)
 
     document.querySelector(".btnDel").addEventListener("click", (e) => {
         e.preventDefault()
         e.stopPropagation()
 
-        form.setAttribute("action", "/board/remove")
-        form.setAttribute("method", "post")
+        form.setAttribute("action","/board/remove")
+        form.setAttribute("method","post")
         form.submit()
 
-    }, false)
+    },false)
 
     document.querySelector(".btnMod").addEventListener("click", (e) => {
         e.preventDefault()
         e.stopPropagation()
 
-        form.setAttribute("action", "/board/modify")
-        form.setAttribute("method", "post")
+        form.setAttribute("action","/board/modify")
+        form.setAttribute("method","post")
         form.submit()
 
-    }, false)
+    },false)
+
 
 </script>
 

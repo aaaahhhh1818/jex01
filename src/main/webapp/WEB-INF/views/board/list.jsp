@@ -47,7 +47,7 @@
                                 <c:forEach items="${dtoList}" var="dto">
                                     <tr>
                                         <td><c:out value="${dto.bno}"></c:out></td>
-                                        <td><c:out value="${dto.title}"></c:out></td>
+                                        <td><a href="javascript:moveRead(${dto.bno})"><c:out value="${dto.title}"></c:out></a></td>
                                             <%--null이면 공백문자나옴--%>
                                         <td><c:out value="${dto.writer}"></c:out></td>
                                         <td><c:out value="${dto.regDate}"></c:out></td>
@@ -59,11 +59,19 @@
                         <!-- /.card-body -->
                         <div class="card-footer clearfix">
                             <ul class="pagination pagination-sm m-0 float-right">
-                                <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+
+                                <c:if test="${pageMaker.prev}">
+                                    <li class="page-item"><a class="page-link" href="javascript:movePage(${pageMaker.start -1})"> 《 </a></li>
+                                </c:if>
+
+                                <c:forEach begin="${pageMaker.start}" end="${pageMaker.end}" var="num">
+                                    <li class="page-item ${pageMaker.page ==num?'active':''}"><a class="page-link" href="javascript:movePage(${num})">${num}</a></li>
+                                </c:forEach>
+
+                                <c:if test="${pageMaker.next}">
+                                    <li class="page-item"><a class="page-link" href="javascript:movePage(${pageMaker.end +1})"> 》 </a></li>
+                                </c:if>
+
                             </ul>
                         </div>
                     </div>
@@ -105,16 +113,40 @@
     console.log("result", result)
 <%--</script>--%>
 
+<form id="actionForm" action="/board/list" method="get">
+    <input type="hidden" name="page" value="${pageMaker.page}">
+    <input type="hidden" name="size" value="${pageMaker.size}">
+</form>
+
 <%@ include file="../includes/footer.jsp" %>
 
 
 <script>
+
+    const actionForm = document.querySelector("#actionForm")
 
     const result = '${result}'
 
     if(result && result !== '') { //bno가 값이 있거나 공백문자가 아닐 때 띄움
         $('#modal-sm').modal('show')
         window.history.replaceState(null, '', '/board/list') //이전으로 돌아갔을 때 다시 모달창 뜨지 않게 처리
+    }
+
+    function movePage(pageNum) {
+
+        //수정하고 돌아가도 원래 보던 페이지 값 유지
+        actionForm.querySelector("input[name='page']").setAttribute("value", pageNum)
+
+        actionForm.submit()
+
+    }
+
+    function moveRead(bno) {
+
+        actionForm.setAttribute("action", "/board/read")
+        actionForm.innerHTML += `<input type='hidden' name='bno' value='\${bno}'>`
+        actionForm.submit()
+
     }
 
 </script>

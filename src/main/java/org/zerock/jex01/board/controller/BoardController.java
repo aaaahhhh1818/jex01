@@ -12,6 +12,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.jex01.board.dto.BoardDTO;
 import org.zerock.jex01.board.service.BoardService;
 import org.zerock.jex01.board.service.TimeService;
+import org.zerock.jex01.common.dto.PageMaker;
+import org.zerock.jex01.common.dto.PageRequestDTO;
+import org.zerock.jex01.common.dto.PageResponseDTO;
+import sun.jvm.hotspot.debugger.Page;
 
 @Controller
 @RequestMapping("/board/*")
@@ -51,17 +55,30 @@ public class BoardController {
     }
 
     @GetMapping("/list")
-    public void getList(Model model) { //그냥 리스트 뽑아주는거라서 void //Model 사용해서 JSP에 담아서 보냄
+    public void getList(PageRequestDTO pageRequestDTO, Model model) { //그냥 리스트 뽑아주는거라서 void //Model 사용해서 JSP에 담아서 보냄
 
-        log.info("c    getList................."); //controller로그 c, service로그 s
-        model.addAttribute("dtoList", boardService.getDTOList());
+        log.info("c    getList................" + pageRequestDTO); //controller로그 c, service로그 s
+
+        //model.addAttribute("dtoList", boardService.getDTOList(pageRequestDTO));
+
+        PageResponseDTO<BoardDTO> responseDTO = boardService.getDTOList(pageRequestDTO);
+
+        model.addAttribute("dtoList", responseDTO.getDtoList());
+
+        int total = responseDTO.getCount();
+        int page = pageRequestDTO.getPage();
+        int size = pageRequestDTO.getSize();
+
+        model.addAttribute("pageMaker", new PageMaker(page, size, total));
 
     }
 
     @GetMapping(value = {"/read", "/modify"})
-    public void read(Long bno, Model model) {
+    public void read(Long bno, PageRequestDTO pageResponseDTO, Model model) {
 
         log.info("c     read " + bno);
+        log.info("c     read " + pageResponseDTO);
+
         model.addAttribute("boardDTO", boardService.read(bno));
 
     }
@@ -79,7 +96,7 @@ public class BoardController {
     }
 
     @PostMapping("/modify")
-    public String modify(BoardDTO boardDTO, RedirectAttributes redirectAttributes) {
+    public String modify(BoardDTO boardDTO, PageRequestDTO pageRequestDTO, RedirectAttributes redirectAttributes) {
 
         log.info("c        modify: " + boardDTO);
 
@@ -87,6 +104,8 @@ public class BoardController {
             redirectAttributes.addFlashAttribute("result", "modified"); //flash 하면 눈에 안보임
         }
         redirectAttributes.addAttribute("bno", boardDTO.getBno()); //bno 값을 가져와줌
+        redirectAttributes.addAttribute("page", pageRequestDTO.getPage());
+        redirectAttributes.addAttribute("size", pageRequestDTO.getSize());
         return "redirect:/board/read";
     }
 

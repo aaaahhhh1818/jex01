@@ -8,8 +8,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.zerock.jex01.board.config.BoardRootConfig;
 import org.zerock.jex01.board.domain.Board;
+import org.zerock.jex01.board.dto.BoardDTO;
 import org.zerock.jex01.common.config.RootConfig;
+import org.zerock.jex01.common.dto.PageRequestDTO;
+import org.zerock.jex01.common.dto.PageResponseDTO;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Log4j2
@@ -37,7 +42,24 @@ public class BoardMapperTests {
     @Test
     public void testList() {
 
-        boardMapper.getList().forEach(board -> log.info(board));
+//        PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
+//                .page(2)
+//                .build();
+
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
+                .type("TC")
+                .keyword("AA")
+                .build(); //검색 조건 주기
+
+        log.info(pageRequestDTO);
+
+        //boardMapper.getList(pageRequestDTO).forEach(board -> log.info(board));
+
+        List<BoardDTO> boardDTOList = boardMapper.getList(pageRequestDTO).stream().map(board -> board.getDTO()).collect(Collectors.toList());
+
+        int count = boardMapper.getCount(pageRequestDTO);
+
+//        PageResponseDTO<BoardDTO> pageResponseDTO
 
     }
 

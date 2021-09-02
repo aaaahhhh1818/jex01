@@ -14,7 +14,26 @@
     </insert>
 
     <select id="getList" resultType="org.zerock.jex01.board.domain.Board">
-        select * from tbl_board order by bno desc limit 0, 100
+        select * from tbl_board
+
+        <foreach collection="arr" item="item" separator=" OR " open="WHERE(" close=")">
+            /*#{item} -1차시도..*/
+            <if test="item == 'T'.toString()">
+                title like concat('%', #{keyword}, '%')
+            </if>
+            <if test="item == 'C'.toString()">
+                content like concat('%', #{keyword}, '%')
+            </if>
+            <if test="item == 'W'.toString()">
+                writer like concat('%', #{keyword}, '%')
+            </if>
+        </foreach>
+
+        order by bno desc limit #{skip}, #{size}
+    </select>
+
+    <select id="getCount" resultType="int">
+        select count(bno) from tbl_board
     </select>
 
     <select id="select" resultType="org.zerock.jex01.board.domain.Board">

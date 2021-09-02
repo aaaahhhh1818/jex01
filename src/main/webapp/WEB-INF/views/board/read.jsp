@@ -56,6 +56,12 @@
                             </div>
                         </div>
                         <!-- /.card-body -->
+
+                        <div class="card-footer float-right">
+                            <button type="button" class="btn btn-default btnList">LIST</button>
+                            <button type="button" class="btn btn-info btnMod">MODIFY</button>
+                        </div>
+
                     </div>
                     <!-- /.card -->
                 </div>
@@ -64,7 +70,29 @@
     </section>
 </div>
 
+<form id="actionForm" action="/board/list" method="get">
+    <input type="hidden" name="page" value="${pageRequestDTO.page}">
+    <input type="hidden" name="size" value="${pageRequestDTO.size}">
+</form>
+
 <%@ include file="../includes/footer.jsp" %>
+
+<script>
+
+    const actionForm = document.querySelector("#actionForm") //document.querySelector 계속 안쓰려고 미리 만들어 놓는 것
+
+    document.querySelector(".btnList").addEventListener("click", () => {actionForm.submit()}, false)
+
+    document.querySelector(".btnMod").addEventListener("click", () => {
+
+        const bno = '${boardDTO.bno}'
+
+        actionForm.setAttribute("action", "/board/modify")
+        actionForm.innerHTML += `<input type='hidden' name='bno' value='\${bno}'>`
+        actionForm.submit()
+    }, false)
+
+</script>
 
 </body>
 </html>
