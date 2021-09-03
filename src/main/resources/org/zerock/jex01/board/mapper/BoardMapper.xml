@@ -5,6 +5,22 @@
 
 <mapper namespace="org.zerock.jex01.board.mapper.BoardMapper"><!--namespace : 패키지명이랑 맞춰주기  namespace + id = 풀네임-->
 
+    <sql id="search"> <!--sql 조각낸거 -->
+        <if test="type != null"><!--type이 null이면 조건이 없다는 소리, 공백문자면?-->
+        <foreach collection="arr" item="item" separator=" OR " open="WHERE(" close=")">
+            <if test="item == 'T'.toString()">
+                title like concat('%', #{keyword}, '%')
+            </if>
+            <if test="item == 'C'.toString()">
+                content like concat('%', #{keyword}, '%')
+            </if>
+            <if test="item == 'W'.toString()">
+                writer like concat('%', #{keyword}, '%')
+            </if>
+        </foreach>
+        </if>
+    </sql>
+
     <insert id="insert">
         insert tbl_board (title,content,writer)
         values (#{title},#{content},#{writer})
@@ -16,24 +32,16 @@
     <select id="getList" resultType="org.zerock.jex01.board.domain.Board">
         select * from tbl_board
 
-        <foreach collection="arr" item="item" separator=" OR " open="WHERE(" close=")">
-            /*#{item} -1차시도..*/
-            <if test="item == 'T'.toString()">
-                title like concat('%', #{keyword}, '%')
-            </if>
-            <if test="item == 'C'.toString()">
-                content like concat('%', #{keyword}, '%')
-            </if>
-            <if test="item == 'W'.toString()">
-                writer like concat('%', #{keyword}, '%')
-            </if>
-        </foreach>
+        <include refid="search"></include>
 
         order by bno desc limit #{skip}, #{size}
     </select>
 
     <select id="getCount" resultType="int">
         select count(bno) from tbl_board
+
+        <include refid="search"></include>
+
     </select>
 
     <select id="select" resultType="org.zerock.jex01.board.domain.Board">

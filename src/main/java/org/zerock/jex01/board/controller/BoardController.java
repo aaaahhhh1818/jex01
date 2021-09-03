@@ -106,6 +106,12 @@ public class BoardController {
         redirectAttributes.addAttribute("bno", boardDTO.getBno()); //bno 값을 가져와줌
         redirectAttributes.addAttribute("page", pageRequestDTO.getPage());
         redirectAttributes.addAttribute("size", pageRequestDTO.getSize());
+
+        if(pageRequestDTO.getType() != null) {
+            redirectAttributes.addAttribute("type", pageRequestDTO.getType());
+            redirectAttributes.addAttribute("keyword", pageRequestDTO.getKeyword());
+        }
+
         return "redirect:/board/read";
     }
 

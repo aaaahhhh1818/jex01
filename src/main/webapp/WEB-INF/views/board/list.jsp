@@ -55,21 +55,57 @@
                                 </c:forEach>
                                 </tbody>
                             </table>
+
+                            <!-- 검색부분 -->
+                            <form action="/board/list" method="get">
+                                <input type="hidden" name="page" value="1">
+                                <input type="hidden" name="size" value="${pageMaker.size}">
+                                <!-- 검색 type 선택 -->
+                                <div class="col-sm-12">
+                                    <!-- select -->
+                                    <div class="form-group">
+                                        <label>Search</label>
+                                        <select name="type" class="custom-select">
+                                            <option value="">---</option>
+                                            <option value="T" ${pageRequestDTO.type=="T"?"selected":""}>제목</option>
+                                            <option value="TC" ${pageRequestDTO.type=="TC"?"selected":""}>제목내용</option>
+                                            <option value="C" ${pageRequestDTO.type=="C"?"selected":""}>내용</option>
+                                            <option value="TCW" ${pageRequestDTO.type=="TCW"?"selected":""}>제목내용작성자</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!--keyword 검색창-->
+                                <div class="col-sm-9">
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" class="form-control" name="keyword" value="${pageRequestDTO.keyword}">
+                                        <span class="input-group-append"><button type="submit" class="btn btn-info btn-flat">Go!</button></span>
+                                    </div>
+                                </div>
+                            </form>
+                            <!-- 검색부분 끝-->
+
                         </div>
+
                         <!-- /.card-body -->
                         <div class="card-footer clearfix">
                             <ul class="pagination pagination-sm m-0 float-right">
 
                                 <c:if test="${pageMaker.prev}">
-                                    <li class="page-item"><a class="page-link" href="javascript:movePage(${pageMaker.start -1})"> 《 </a></li>
+                                    <li class="page-item"><a class="page-link"
+                                                             href="javascript:movePage(${pageMaker.start -1})"> 《 </a>
+                                    </li>
                                 </c:if>
 
                                 <c:forEach begin="${pageMaker.start}" end="${pageMaker.end}" var="num">
-                                    <li class="page-item ${pageMaker.page ==num?'active':''}"><a class="page-link" href="javascript:movePage(${num})">${num}</a></li>
+                                    <li class="page-item ${pageMaker.page ==num?'active':''}"><a class="page-link"
+                                                                                                 href="javascript:movePage(${num})">${num}</a>
+                                    </li>
                                 </c:forEach>
 
                                 <c:if test="${pageMaker.next}">
-                                    <li class="page-item"><a class="page-link" href="javascript:movePage(${pageMaker.end +1})"> 》 </a></li>
+                                    <li class="page-item"><a class="page-link"
+                                                             href="javascript:movePage(${pageMaker.end +1})"> 》 </a>
+                                    </li>
                                 </c:if>
 
                             </ul>
@@ -116,6 +152,11 @@
 <form id="actionForm" action="/board/list" method="get">
     <input type="hidden" name="page" value="${pageMaker.page}">
     <input type="hidden" name="size" value="${pageMaker.size}">
+
+    <c:if test="${pageRequestDTO.type != null}"> <!--검색조건이 있을때는 붙고 없을때는 떨어져-->
+        <input type="hidden" name="type" value="${pageRequestDTO.type}">
+        <input type="hidden" name="keyword" value="${pageRequestDTO.keyword}">
+    </c:if>
 </form>
 
 <%@ include file="../includes/footer.jsp" %>
@@ -127,7 +168,7 @@
 
     const result = '${result}'
 
-    if(result && result !== '') { //bno가 값이 있거나 공백문자가 아닐 때 띄움
+    if (result && result !== '') { //bno가 값이 있거나 공백문자가 아닐 때 띄움
         $('#modal-sm').modal('show')
         window.history.replaceState(null, '', '/board/list') //이전으로 돌아갔을 때 다시 모달창 뜨지 않게 처리
     }

@@ -73,6 +73,11 @@
 <form id="actionForm" action="/board/list" method="get">
     <input type="hidden" name="page" value="${pageRequestDTO.page}">
     <input type="hidden" name="size" value="${pageRequestDTO.size}">
+
+    <c:if test="${pageRequestDTO.type != null}"> <!--검색조건이 있을때는 붙고 없을때는 떨어져-->
+        <input type="hidden" name="type" value="${pageRequestDTO.type}">
+        <input type="hidden" name="keyword" value="${pageRequestDTO.keyword}">
+    </c:if>
 </form>
 
 <%@ include file="../includes/footer.jsp" %>
@@ -91,6 +96,33 @@
         actionForm.innerHTML += `<input type='hidden' name='bno' value='\${bno}'>`
         actionForm.submit()
     }, false)
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/resources/js/reply.js"></script>
+
+<script>
+
+    function after(result) {
+        console.log("after..............")
+        console.log("result", result)
+    }
+
+    //doA().then(result => console.log(result))
+
+    //doB(after) // ()실행한 객체, ()없으면 순수한 함수
+
+    //const reply = {bno:323, replyer:'user00', reply:'323323323323'} //js 객체 -> 댓글 임의로 등록한 것
+
+    //doC(reply).then(result => console.log(result))
+
+    //doD(112).then(result => console.log(result))
+
+    //객체전달
+    const reply = {rno:112, reply:"Update reply text..."}
+
+    doE(reply).then(result => console.log(result))
 
 </script>
 

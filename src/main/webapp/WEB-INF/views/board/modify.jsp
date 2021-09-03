@@ -35,6 +35,12 @@
                     <form id="form1"> <%--실제로 날라가는애--%>
                         <input type="hidden" name="page" value="${pageRequestDTO.page}">
                         <input type="hidden" name="size" value="${pageRequestDTO.size}">
+
+                        <c:if test="${pageRequestDTO.type != null}">
+                            <input type="hidden" name="type" value="${pageRequestDTO.type}">
+                            <input type="hidden" name="keyword" value="${pageRequestDTO.keyword}">
+                        </c:if>
+
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="exampleInputEmail1">BNO</label>
@@ -77,6 +83,11 @@
 <form id="actionForm" action="/board/list" method="get">
     <input type="hidden" name="page" value="${pageRequestDTO.page}">
     <input type="hidden" name="size" value="${pageRequestDTO.size}">
+
+    <c:if test="${pageRequestDTO.type != null}"> <!--검색조건이 있을때는 붙고 없을때는 떨어져-->
+        <input type="hidden" name="type" value="${pageRequestDTO.type}">
+        <input type="hidden" name="keyword" value="${pageRequestDTO.keyword}">
+    </c:if>
 </form>
 
 <%@ include file="../includes/footer.jsp" %>
