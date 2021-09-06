@@ -64,11 +64,96 @@
 
                     </div>
                     <!-- /.card -->
+
+                    <!-- 댓글 -->
+                    <!-- DIRECT CHAT -->
+                    <div class="card direct-chat direct-chat-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Replies</h3>
+
+                            <div class="card-tools">
+                                <span title="3 New Messages" class="badge badge-primary addReplyBtn">Add Reply</span>
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" title="Contacts" data-widget="chat-pane-toggle">
+                                    <i class="fas fa-comments"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <!-- Conversations are loaded here -->
+                            <div class="direct-chat-messages">
+                                <!-- 댓글 뿌려주기 -->
+                                <!-- /.direct-chat-msg -->
+                            </div>
+                            <!--/.direct-chat-messages-->
+                        </div>
+                    </div>
+                    <!--/.direct-chat -->
+                    <!-- 댓글 끝 -->
+
                 </div>
             </div>
         </div>
     </section>
 </div>
+
+<!--모달 -->
+<div class="modal fade" id="modal-sm">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Reply</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" name="replyer">
+                <input type="text" name="reply">
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary operBtn">Save changes</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!--수정 삭제 모달 -->
+<div class="modal fade" id="modal-lg">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Modify/Remove</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="rno">
+                <input type="text" name="replyerMod">
+                <input type="text" name="replyMod">
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-info btnModReply">Modify</button>
+                <button type="button" class="btn btn-danger btnRem">Remove</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 
 <form id="actionForm" action="/board/list" method="get">
     <input type="hidden" name="page" value="${pageRequestDTO.page}">
@@ -120,9 +205,131 @@
     //doD(112).then(result => console.log(result))
 
     //객체전달
-    const reply = {rno:112, reply:"Update reply text..."}
+    //const reply = {rno:112, reply:"Update reply text..."}
 
-    doE(reply).then(result => console.log(result))
+    //doE(reply).then(result => console.log(result))
+
+    function getList() {
+        const target = document.querySelector(".direct-chat-messages") //댓글 뿌려주는 부분 class로 잡아줌
+        const bno = '${boardDTO.bno}' //EL태그임 //230
+
+
+
+        function convertTemp(replyObj) {
+
+            const { rno, bno, reply, replyer, replyDate, modDate } = {...replyObj} //변수들 펼쳐서 넣어줌
+
+            const temp =`<div class="direct-chat-msg">
+                <div class="direct-chat-infos clearfix">
+                    <span class="direct-chat-name float-left">\${rno}--\${replyer}</span>
+                    <span class="direct-chat-timestamp float-right">\${replyDate}</span>
+                </div>
+                <div class="direct-chat-text" data-rno='\${rno}' data-replyer='\${replyer}'>\${reply}</div>
+            </div>`
+
+            return temp
+
+        }
+
+        getReplyList(bno).then(data => {
+            console.log(data) //현재 데이터 배열. 왜 즉시실행함수 사용 안하고 함수로 뺐을까? //댓글을 추가할 때 문제가됨
+            let str ="";
+
+            data.forEach(reply => {
+                str += convertTemp(reply)
+            })
+            target.innerHTML = str
+        })
+    }
+
+    //최초 실행
+    (function() {
+        getList()
+    })()
+
+    const modalDiv = $("#modal-sm")
+
+    let oper = null //변수명 잡아줘야함
+
+    document.querySelector(".addReplyBtn").addEventListener("click", function() {
+
+        oper = 'add'
+
+        modalDiv.modal('show')
+
+    }, false)
+
+    //전송하기 전 화면 처리
+    document.querySelector(".operBtn").addEventListener("click", function () {
+
+        const bno = '${boardDTO.bno}'
+        const replyer = document.querySelector("input[name='replyer']").value
+        const reply = document.querySelector("input[name='reply']").value
+
+        if (oper === 'add') {
+            // console.log(bno, replyer, reply)
+
+            const replyObj = {bno, replyer, reply} // {bno:bno, replyer:replyer, reply:reply}
+            console.log(replyObj)
+            addReply(replyObj).then(result => {
+                getList() //비동기 호출 2번 일어남!
+                modalDiv.modal('hide') //입력 후 모달창 사라지게
+                document.querySelector("input[name='replyer']").value = "" //모달창 입력값 없애기
+                document.querySelector("input[name='reply']").value = ""
+            })
+        }
+
+    }, false)
+
+    //수정/삭제 dom
+    const modModal = $("#modal-lg")
+    const modReplyer = document.querySelector("input[name='replyerMod']")
+    const modReply = document.querySelector("input[name='replyMod']")
+    const modRno = document.querySelector("input[name='rno']")
+
+    document.querySelector(".direct-chat-messages").addEventListener("click", (e) => { // 안에있는 애들은 동적으로 처리된 데이터. 얘는 원래 있었던 애라 얘한테 이벤트 걸어줌
+
+        const target = e.target
+        const bno = '${boardDTO.bno}'
+
+        if(target.matches(".direct-chat-text")) {
+            //data-속성으로 뽑아온 값을 추출
+            const rno = target.getAttribute("data-rno")
+            const replyer = target.getAttribute("data-replyer")
+            const reply = target.innerHTML
+            console.log(rno, replyer, reply, bno)
+
+            modRno.value = rno
+            modReply.value = reply
+            modReplyer.value = replyer
+
+            //Remove 버튼 눌렀을 때 rno 값 받아오기
+            document.querySelector(".btnRem").setAttribute("data-rno", rno)
+
+            modModal.modal('show')
+        }
+    }, false)
+
+    document.querySelector(".btnRem").addEventListener("click", (e) => {
+        const rno = e.target.getAttribute("data-rno")
+        //alert(rno) //클릭하면 rno 나오게 // 대신 axios 사용
+        removeReply(rno).then(result => {
+            getList()
+            modModal.modal('hide')
+        })
+    }, false)
+
+    document.querySelector(".btnModReply").addEventListener("click", (e) => {
+
+        const replyObj = {rno: modRno.value , reply: modReply.value} //이미 값을 물고 있으므로 얘네만 데려오면 됨
+
+        console.log(replyObj)
+
+        modifyReply(replyObj).then(result => {
+            getList()
+            modModal.modal('hide')
+        })
+    }, false)
 
 </script>
 

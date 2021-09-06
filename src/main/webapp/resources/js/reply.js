@@ -1,6 +1,6 @@
 
 //비동기를 동기화처럼 처리되려면 async 사용
-async function doA() { //함수로 - 선언문
+async function doA() { //함수 - 선언문
 
     console.log("doA.................")
 
@@ -23,7 +23,7 @@ const doB = (fn) => { //변수 - 선언식
     }
 }
 
-async function doC(obj) { //post 방식일 때 파라미터 넣어주기
+async function doC(obj) { //post 방식일 때 파라미터 넣어주기 //댓글 추가기능
 
     const response = await axios.post("/replies", obj)
 
@@ -42,6 +42,36 @@ const doD = async (rno) => {
 const doE = async (reply) => {
 
     const response = await axios.put(`/relies/${reply.rno}`, reply)
+
+    return response.data
+}
+
+const getReplyList = async (bno) => {
+    const response = await axios.get(`/replies/list/${bno}`)
+
+    return response.data
+}
+
+//add reply
+//추가 한 후 댓글 목록 데이터 새로 가져와야함
+async function addReply(obj) {
+
+    const response = await axios.post("/replies", obj)
+
+    return response.data
+
+}
+
+const removeReply = async (rno) => {
+
+    const response = await axios.delete(`/replies/${rno}`)
+    return response.data
+
+}
+
+const modifyReply = async (reply) => {
+
+    const response = await axios.put(`/replies/${reply.rno}`, reply)
 
     return response.data
 }

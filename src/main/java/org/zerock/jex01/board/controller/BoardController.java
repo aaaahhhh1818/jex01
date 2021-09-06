@@ -73,7 +73,7 @@ public class BoardController {
 
     }
 
-    @GetMapping(value = {"/read", "/modify"})
+    @GetMapping(value = {"/read", "/modify", "/read2"})
     public void read(Long bno, PageRequestDTO pageResponseDTO, Model model) {
 
         log.info("c     read " + bno);
