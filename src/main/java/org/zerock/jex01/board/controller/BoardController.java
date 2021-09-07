@@ -59,6 +59,10 @@ public class BoardController {
 
         log.info("c    getList................" + pageRequestDTO); //controller로그 c, service로그 s
 
+        log.info("====================================");
+        log.info(boardService);
+        log.info("====================================");
+
         //model.addAttribute("dtoList", boardService.getDTOList(pageRequestDTO));
 
         PageResponseDTO<BoardDTO> responseDTO = boardService.getDTOList(pageRequestDTO);

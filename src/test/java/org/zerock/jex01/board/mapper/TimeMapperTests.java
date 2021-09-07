@@ -23,6 +23,7 @@ public class TimeMapperTests {
         log.info("--------------------");
         log.info(timeMapper); //로그 찍히는거 proxy
         log.info(timeMapper.getTime2());
+        log.info(timeMapper.getTime2());
         log.info("--------------------");
         log.info("--------------------");
     }

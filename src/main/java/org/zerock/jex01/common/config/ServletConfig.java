@@ -15,7 +15,7 @@ import org.zerock.jex01.common.converter.StringToLocalDateTimeConverter;
 @EnableWebMvc //Spring FrameWork에서 자동으로 config값(설정값)을 세팅해준다.
 //@ComponentScan(basePackages = {"com.example.controller"})//해당 패키지를 스캔하는 어노테이션
 @Import(BoardServletConfig.class)
-@ComponentScan(basePackages = "org.zerock.jex01.common.exception")
+@ComponentScan(basePackages = {"org.zerock.jex01.common.exception", "org.zerock.jex01.common.controller"})
 public class ServletConfig implements WebMvcConfigurer {
 
     //스프링관련설정 추가 (LocalDate 관련)

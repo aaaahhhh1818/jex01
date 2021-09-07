@@ -214,7 +214,6 @@
         const bno = '${boardDTO.bno}' //EL태그임 //230
 
 
-
         function convertTemp(replyObj) {
 
             const { rno, bno, reply, replyer, replyDate, modDate } = {...replyObj} //변수들 펼쳐서 넣어줌
