@@ -25,4 +25,6 @@ public interface BoardMapper {
     int updateReplyCnt(@Param("bno") Long bno,@Param("num") int num); //글을 추가할 때나 삭제할 때 카운트 해줘야함 //MyBatis는 파라이터 하나 밖에 못받음
 
     int insertAttach(BoardAttach attach);
+
+    int deleteAttach(Long bno);
 }

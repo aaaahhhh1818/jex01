@@ -64,6 +64,11 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!--첨부파일 데이터 hidden으로 넣어주기-->
+                        <div class="temp">
+
+                        </div>
                         <!-- /.card-body -->
 
                         <div class="card-footer">
@@ -73,6 +78,31 @@
                         </div>
                     </form>
                     </div>
+
+                    <!--첨부파일 추가 부분-->
+                    <label for="exampleInputFile">File input</label>
+                    <div class="input-group">
+                        <div class="custom-file">
+                            <input type="file" name="uploadFiles" class="custom-file-input" id="exampleInputFile" multiple>
+                            <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                        </div>
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="uploadBtn">Upload</span>
+                        </div>
+                    </div>
+
+                    <div class="uploadResult">
+                        <c:forEach items="${boardDTO.files}" var="attach">
+                            <div data-uuid="${attach.uuid}" data-filename="${attach.fileName}" data-uploadpath="${attach.uploadPath}" data-image="${attach.image}">
+                                <c:if test="${attach.image}">
+                                    <img src="/viewFile?file=${attach.getThumbnail()}">
+                                </c:if>
+                                <span>${attach.fileName}</span>
+                                <button onclick="javascript:removeDiv(this)">x</button><!--파일 자체를 지우면 안되고 div만 지워서 처리해줌 -->
+                            </div>
+                        </c:forEach>
+                    </div>
+
                     <!-- /.card -->
                 </div>
             </div>
@@ -123,12 +153,84 @@
         e.preventDefault()
         e.stopPropagation()
 
+        const fileDivArr = uploadResultDiv.querySelectorAll("div") //배열의 크기가 첨부파일 개수임
+
+        if(fileDivArr && fileDivArr.length > 0) { //div 값이 있을 때만 의미있는 코드 !
+
+            let str = ""
+            for (let i = 0; i < fileDivArr.length; i++) {
+                const target = fileDivArr[i]
+                const uuid = target.getAttribute("data-uuid")
+                const fileName = target.getAttribute("data-filename")
+                const uploadPath = target.getAttribute("data-uploadpath")
+                const image = target.getAttribute("data-image")
+
+                str += `<input type='hidden' name='files[\${i}].uuid' value='\${uuid}'>`
+                str += `<input type='hidden' name='files[\${i}].fileName' value='\${fileName}'>`
+                str += `<input type='hidden' name='files[\${i}].uploadPath' value='\${uploadPath}'>`
+                str += `<input type='hidden' name='files[\${i}].image' value='\${image}'>`
+            }
+            document.querySelector(".temp").innerHTML = str
+        }//end if
+
+
+        //얘네는 첨부파일 없어도 존재 해야함
         form.setAttribute("action","/board/modify")
         form.setAttribute("method","post")
+
         form.submit()
 
     },false)
 
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+
+    const uploadResultDiv = document.querySelector(".uploadResult")
+
+    document.querySelector("#uploadBtn").addEventListener("click", (e) => {
+
+        const formData = new FormData()
+        const fileInput = document.querySelector("input[name='uploadFiles']")
+
+        for(let i = 0; i < fileInput.files.length; i++) {
+            //같은이름으로 여러개 담는게 핵심..?
+            formData.append("uploadFiles", fileInput.files[i]) // 이 이름이 파라미터가 됨 (controller에서)
+        }
+
+        console.dir(formData)
+
+        const headerObj = { headers: {'Content-Type': 'multipart/form-data'}} //헤더 정보 보내는거
+
+        //axios로 데이터 불러오기
+        axios.post("/upload", formData, headerObj).then((response) => {
+            const arr = response.data
+            console.log(arr)
+            let str = ""
+            for(let i = 0; i < arr.length; i++) {
+
+                const {uuid, fileName, uploadPath, image, thumbnail, fileLink} = {...arr[i]} //스프레드 연산자 써서 값 꺼냄
+
+                if(image) {
+                    str += `<div data-uuid='\${uuid}' data-filename='\${fileName}' data-uploadpath='\${uploadPath}' data-image='\${image}'>
+                            <img src="/viewFile?file=\${thumbnail}"/><span>\${fileName}</span>
+                            <button onclick="javascript:removeDiv(this)">x</button></div>`
+                }else {
+                    str += `<div data-uuid='\${uuid}' data-filename='\${fileName}' data-uploadpath='\${uploadPath}' data-image='\${image}'>
+                            <a href="/downFile?file=\${fileLink}">\${fileName}</a><button onclick="javascript:removeDiv(this)">x</button></div>`
+                }
+
+            }//enf for
+            uploadResultDiv.innerHTML += str //업로드 여러번 할 수 있기 때문에 기존에 있던애 유지하면서 추가
+        })
+    }, false)
+
+    function removeDiv(ele) { //등록 할 때 처럼 실제로 삭제되는건 아니고 화면상에서만 삭제처리
+        ele.parentElement.remove()
+    }
 
 </script>
 

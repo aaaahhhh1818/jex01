@@ -26,6 +26,7 @@ public class BoardDTO {
     private String writer;
     private LocalDateTime regDate;
     private LocalDateTime modDate;
+    private int replyConut;
 
     @Builder.Default
     private List<UploadResponseDTO> files = new ArrayList<>();

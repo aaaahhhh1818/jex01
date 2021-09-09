@@ -27,6 +27,7 @@ public class BoardServiceImpl implements BoardService{
         boardMapper.insert(board);
 
         Long bno = board.getBno();
+
         board.getAttachList().forEach(attach -> {
             attach.setBno(bno);
             boardMapper.insertAttach(attach);
@@ -74,6 +75,19 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public boolean modify(BoardDTO boardDTO) {
-        return boardMapper.update(boardDTO.getDomain()) > 0;
+
+        boardMapper.deleteAttach(boardDTO.getBno());
+
+        Board board = boardDTO.getDomain();
+
+        //첨부파일의 목록만큼 insert해줘야함
+        Long bno = board.getBno();
+
+        board.getAttachList().forEach(attach -> {
+            attach.setBno(bno);
+            boardMapper.insertAttach(attach);
+        });
+
+        return boardMapper.update(board) > 0;
     }
 }

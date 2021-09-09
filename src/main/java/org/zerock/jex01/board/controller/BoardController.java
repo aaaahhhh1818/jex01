@@ -102,7 +102,18 @@ public class BoardController {
     @PostMapping("/modify")
     public String modify(BoardDTO boardDTO, PageRequestDTO pageRequestDTO, RedirectAttributes redirectAttributes) {
 
+        log.info("--------------------modify-------------");
+        log.info("--------------------modify-------------");
+        log.info("--------------------modify-------------");
+
         log.info("c        modify: " + boardDTO);
+//        if(boardDTO.getFiles().size() > 0) {
+//            boardDTO.getFiles().forEach(dto -> log.info(dto)); //수정된 첨부파일이 포함된 수 만큼 정보 로그 찍기
+//        }
+
+        log.info("--------------------modify-------------");
+        log.info("--------------------modify-------------");
+        log.info("--------------------modify-------------");
 
         if(boardService.modify(boardDTO)) {
             redirectAttributes.addFlashAttribute("result", "modified"); //flash 하면 눈에 안보임

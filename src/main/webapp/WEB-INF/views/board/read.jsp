@@ -62,6 +62,19 @@
                             <button type="button" class="btn btn-info btnMod">MODIFY</button>
                         </div>
 
+                        <!-- 파일정보 뿌려주기 -->
+                        <div>
+                            <c:forEach items="${boardDTO.files}" var="attach">
+                                <div>
+                                    <c:if test="${attach.image}">
+                                        <img onclick="javascript:showOrigin('${attach.getFileLink()}')" src="/viewFile?file=${attach.getThumbnail()}">
+                                    </c:if>
+                                    <span>${attach.fileName}</span>
+                                </div>
+                            </c:forEach>
+                        </div>
+
+
                     </div>
                     <!-- /.card -->
 
@@ -155,6 +168,23 @@
 </div>
 <!-- /.modal -->
 
+<!--이미지 띄우는 모달 -->
+<div class="modal fade" id="modal-image">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+            <div class="modal-body">
+                <img id="targetImage">
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
 <form id="actionForm" action="/board/list" method="get">
     <input type="hidden" name="page" value="${pageRequestDTO.page}">
     <input type="hidden" name="size" value="${pageRequestDTO.size}">
@@ -188,6 +218,16 @@
 <script src="/resources/js/reply.js"></script>
 
 <script>
+
+    const modalImage = new bootstrap.Modal(document.querySelector('#modal-image'))
+
+    function showOrigin(fileLink) {
+
+        //alert(fileLink)
+        document.querySelector("#targetImage").src = `/viewFile?file=\${fileLink}` //src 실시간으로 받는게 더 빠름
+        modalImage.show()
+
+    }
 
     function after(result) {
         console.log("after..............")
