@@ -85,6 +85,16 @@ dependencies {
     // https://mvnrepository.com/artifact/net.coobird/thumbnailator
     implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.14'
 
+    // https://mvnrepository.com/artifact/org.springframework.security/spring-security-core
+    implementation group: 'org.springframework.security', name: 'spring-security-core', version: '5.5.2'
+    implementation group: 'org.springframework.security', name: 'spring-security-web', version: '5.5.2'
+    implementation group: 'org.springframework.security', name: 'spring-security-config', version: '5.5.2'
+    implementation group: 'org.springframework.security', name: 'spring-security-taglibs', version: '5.5.2'
+
+    // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
+    implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+
+
 }
 
 test {
