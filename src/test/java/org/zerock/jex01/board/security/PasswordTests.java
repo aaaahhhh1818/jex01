@@ -9,6 +9,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.zerock.jex01.common.config.RootConfig;
 import org.zerock.jex01.security.config.SecurityConfig;
+import org.zerock.jex01.security.domain.Member;
+import org.zerock.jex01.security.mapper.MemberMapper;
 
 @Log4j2
 @ExtendWith(SpringExtension.class)
@@ -17,6 +19,19 @@ public class PasswordTests {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired(required = false) //에러나지마 ! 지금은 disable 해놔서 에러안남
+    MemberMapper memberMapper;
+
+    @Test
+    public void testMember() {
+        String mid = "admin0";
+
+        Member member = memberMapper.findByMid(mid);
+
+        log.warn("---------------------");
+        log.warn(member);
+    }
 
     @Test //접은 암호 확인
     public void testEncode() {
@@ -45,7 +60,7 @@ public class PasswordTests {
         for(int i = 0; i < 10; i++) {
 
             String mid = "user" + i; //user0
-            String mpw = passwordEncoder.encode("pw"+i); //pw0 -> Bcypted
+            String mpw = passwordEncoder.encode("pw"+i); //pw0 -> Bcrypt
             String mname = "유저" + i; //유저0
 
             String result = query;
@@ -67,7 +82,7 @@ public class PasswordTests {
 
         String query = "insert into tbl_member (mid,mpw,mname) values ('v1','v2','v3');";
 
-        for(int i = 100; i < 110; i++) {
+        for(int i = 0; i < 10; i++) {
 
             String mid = "admin" + i; //user0
             String mpw = passwordEncoder.encode("pw"+i); //pw0 -> Bcypted
@@ -80,6 +95,42 @@ public class PasswordTests {
             result = result.replace("v3", mname);
 
             System.out.println(result);
+
+        }
+
+    }
+
+    @Test
+    public void insertMemberRole() {
+
+        //문자열 replace 시키지 않고 formatting
+        String sql = "insert into tbl_member_role (mid, role) values ('%s', '%s');";
+
+        for(int i = 0; i < 10; i++) {
+
+            String result = String.format(sql, "user" + i, "ROLE_MEMBER");
+
+            System.out.println(result);
+
+        }
+
+    }
+
+    @Test
+    public void insertAdminRole() {
+
+        //문자열 replace 시키지 않고 formatting
+        String sql = "insert into tbl_member_role (mid, role) values ('%s', '%s');";
+
+        for(int i = 0; i < 10; i++) {
+
+            String result = String.format(sql, "admin" + i, "ROLE_MEMBER");
+
+            System.out.println(result);
+
+            String result2 = String.format(sql, "admin" + i, "ROLE_ADMIN");
+
+            System.out.println(result2);
 
         }
 
