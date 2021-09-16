@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ include file="../includes/header.jsp" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -59,7 +60,11 @@
 
                         <div class="card-footer float-right">
                             <button type="button" class="btn btn-default btnList">LIST</button>
+                            <sec:authentication property="principal" var="memberDTO"/>
+
+                            <c:if test="${boardDTO.writer eq memberDTO.mid}">
                             <button type="button" class="btn btn-info btnMod">MODIFY</button>
+                            </c:if>
                         </div>
 
                         <!-- 파일정보 뿌려주기 -->

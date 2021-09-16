@@ -3,6 +3,7 @@ package org.zerock.jex01.board.controller;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +36,7 @@ public class BoardController {
         log.info(num % 0);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/register")
     public void registerGet() {
 
@@ -77,6 +79,7 @@ public class BoardController {
 
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping(value = {"/read", "/modify", "/read2"})
     public void read(Long bno, PageRequestDTO pageResponseDTO, Model model) {
 
@@ -99,6 +102,7 @@ public class BoardController {
         return "redirect:/board/list";
     }
 
+    @PreAuthorize("principal.mid == #boardDTO.writer") //얘네가 맞아야 글을 수정할 수 있음
     @PostMapping("/modify")
     public String modify(BoardDTO boardDTO, PageRequestDTO pageRequestDTO, RedirectAttributes redirectAttributes) {
 

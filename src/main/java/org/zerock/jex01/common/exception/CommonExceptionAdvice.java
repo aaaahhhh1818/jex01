@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-@ControllerAdvice
+//@ControllerAdvice
 @Log4j2
 public class CommonExceptionAdvice {
 

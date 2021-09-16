@@ -14,6 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.zerock.jex01.security.handler.CustomAccessDeniedHandler;
+import org.zerock.jex01.security.handler.CustomAuthenticationEntryPoint;
 import org.zerock.jex01.security.handler.CustomLoginSuccessHandler;
 import org.zerock.jex01.security.service.CustomUserDetailsService;
 
@@ -41,10 +43,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.authorizeRequests() //인가받은 사용자만 쓰는데 ..그중에 어떤?? ↓↓↓↓
-                .antMatchers("/sample/doAll").permitAll()
-                .antMatchers("/sample/doMember").access("hasRole('ROLE_MEMBER')")
-                .antMatchers("/sample/doAdmin").access("hasRole('ROLE_ADMIN')");
+//        http.authorizeRequests() //인가받은 사용자만 쓰는데 ..그중에 어떤?? ↓↓↓↓
+//                .antMatchers("/sample/doAll").permitAll()
+//                .antMatchers("/sample/doMember").access("hasRole('ROLE_MEMBER')")
+//                .antMatchers("/sample/doAdmin").access("hasRole('ROLE_ADMIN')");
 
         http.formLogin().loginPage("/customLogin") //로그인 페이지를 보여주는 역할 (spring security에서 보여주는 자동 기능)
                 .loginProcessingUrl("/login"); //로그인 화면만 custom 사용하고 실제 기능은 security가 하게 함!
@@ -57,6 +59,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.rememberMe().tokenRepository(persistentTokenRepository())
                 .key("zerock").tokenValiditySeconds(60*60*24*30); //한달 동안 유지됨
 
+        http.exceptionHandling()
+                .authenticationEntryPoint(customAuthenticationEntryPoint());
+
+        //        .accessDeniedHandler(accessDeniedHandler());
+
+//        http.exceptionHandling().accessDeniedHandler(accessDeniedHandler());
+
+    }
+
+    @Bean
+    public CustomAccessDeniedHandler accessDeniedHandler() {
+        return new CustomAccessDeniedHandler();
+    }
+
+    @Bean
+    public CustomAuthenticationEntryPoint customAuthenticationEntryPoint() {
+        return new CustomAuthenticationEntryPoint();
     }
 
     @Bean //handler 객체 생성

@@ -3,6 +3,7 @@ package org.zerock.jex01.common.config;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
@@ -16,6 +17,7 @@ import org.zerock.jex01.common.converter.StringToLocalDateTimeConverter;
 //@ComponentScan(basePackages = {"com.example.controller"})//해당 패키지를 스캔하는 어노테이션
 @Import(BoardServletConfig.class)
 @ComponentScan(basePackages = {"org.zerock.jex01.common.exception", "org.zerock.jex01.common.controller"})
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ServletConfig implements WebMvcConfigurer {
 
     //스프링관련설정 추가 (LocalDate 관련)
