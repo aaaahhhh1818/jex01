@@ -315,12 +315,12 @@
 
             const replyObj = {bno, replyer, reply} // {bno:bno, replyer:replyer, reply:reply}
             console.log(replyObj)
-            addReply(replyObj).then(result => {
-                getList() //비동기 호출 2번 일어남!
-                modalDiv.modal('hide') //입력 후 모달창 사라지게
-                document.querySelector("input[name='replyer']").value = "" //모달창 입력값 없애기
-                document.querySelector("input[name='reply']").value = ""
-            })
+            // addReply(replyObj).then(result => {
+            //     getList() //비동기 호출 2번 일어남!
+            //     modalDiv.modal('hide') //입력 후 모달창 사라지게
+            //     document.querySelector("input[name='replyer']").value = "" //모달창 입력값 없애기
+            //     document.querySelector("input[name='reply']").value = ""
+            // })
         }
 
     }, false)
